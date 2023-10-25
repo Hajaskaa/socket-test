@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 
@@ -7,8 +8,8 @@ const server = createServer(app);
 const io = new Server(server);
 
 app.get("/", (req, res) => {
-  //const url = new URL("./index.html", import.meta.url).pathname;
-  res.sendFile("*");
+  const filePath = path.join(__dirname, "index.html");
+  res.sendFile(filePath);
 });
 
 io.on("connection", (socket) => {
