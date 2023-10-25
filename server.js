@@ -7,6 +7,8 @@ const server = createServer(app);
 const io = new Server(server);
 
 app.get("/", (req, res) => {
+  const url = new URL("./index.html", import.meta.url).pathname;
+  console.log(url);
   res.sendFile(new URL("./index.html", import.meta.url).pathname);
 });
 
@@ -16,6 +18,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log("server running at http://localhost:3000");
+server.listen(10000, () => {
+  console.log("server running at ");
 });
