@@ -8,7 +8,7 @@ const io = new Server(server);
 
 app.get("/", (req, res) => {
   //const url = new URL("./index.html", import.meta.url).pathname;
-  res.sendFile("/*");
+  res.sendFile("*");
 });
 
 io.on("connection", (socket) => {
