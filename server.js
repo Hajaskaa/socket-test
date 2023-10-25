@@ -18,9 +18,15 @@ app.get("/", (req, res) => {
   res.sendFile(filePath);
 });
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   const id = socket.id[0] + socket.id[1] + socket.id[2];
-  io.emit("chat message", "[" + id + "]" + "👻 " + " has joined.");
+  const idCount = await io.allSockets();
+  console.log(idCount);
+
+  io.emit(
+    "chat message",
+    "[" + id + "]" + "👻 " + " has joined. Current whisperers: " + idCount.size
+  );
   socket.on("chat message", (msg) => {
     io.emit("chat message", msg);
   });
