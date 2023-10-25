@@ -7,10 +7,7 @@ const server = createServer(app);
 const io = new Server(server);
 
 app.get("/", (req, res) => {
-  res.sendFile(
-    new URL("D:/Documents/2023Webdev/socket-test/index.html", import.meta.url)
-      .pathname
-  );
+  res.sendFile(new URL("./index.html", import.meta.url).pathname);
 });
 
 io.on("connection", (socket) => {
