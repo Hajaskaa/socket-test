@@ -19,7 +19,8 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
+  const id = socket.id[0] + socket.id[1] + socket.id[2];
+  io.emit("chat message", "[" + id + "]" + "👻 " + " has joined.");
   socket.on("chat message", (msg) => {
     io.emit("chat message", msg);
   });
