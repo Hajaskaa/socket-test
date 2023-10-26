@@ -11,6 +11,8 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
+const history = [];
+
 app.use(express.static(__dirname));
 
 app.get("/", (req, res) => {
@@ -20,17 +22,26 @@ app.get("/", (req, res) => {
 
 io.on("connection", async (socket) => {
   const id = socket.id[0] + socket.id[1] + socket.id[2];
-  const idCount = await io.allSockets();
-  console.log(idCount);
+  const clients = await io.allSockets();
+
+  for (let i = 0; i < history.length; i++) {
+    socket.emit("chat message", history[i]);
+  }
 
   io.emit(
     "chat message",
-    "[" + id + "]" + "👻 " + " has joined. Current whisperers: " + idCount.size
+    "[" + id + "]" + "👻 " + " has joined. Current whisperers: " + clients.size
   );
   socket.on("chat message", (msg) => {
+    handleChatHistory(msg);
     io.emit("chat message", msg);
   });
 });
+
+function handleChatHistory(msg) {
+  history.push(msg);
+  if (history.length > 99) history.shift();
+}
 
 server.listen(10000, () => {
   console.log("server running at ");
