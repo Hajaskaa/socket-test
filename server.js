@@ -21,16 +21,21 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", async (socket) => {
-  const id = socket.id[0] + socket.id[1] + socket.id[2];
-  const clients = await io.allSockets();
-
   for (let i = 0; i < history.length; i++) {
     socket.emit("chat message", history[i]);
   }
 
+  const clients = await io.allSockets();
+  const clientId = getClientId(socket);
+
   io.emit(
     "chat message",
-    "[" + id + "]" + "👻 " + " has joined. Current whisperers: " + clients.size
+    "[" +
+      clientId +
+      "]" +
+      "👻 " +
+      " has joined. Current whisperers: " +
+      clients.size
   );
   socket.on("chat message", (msg) => {
     handleChatHistory(msg);
@@ -41,6 +46,18 @@ io.on("connection", async (socket) => {
 function handleChatHistory(msg) {
   history.push(msg);
   if (history.length > 99) history.shift();
+}
+
+function getClientId(socket) {
+  const socketIdArray = socket.id.match(/[A-Za-z]/g);
+  const socketIdSet = [...new Set(socketIdArray)];
+  console.log(socketIdArray);
+  const id =
+    socketIdSet[0].toUpperCase() +
+    socketIdSet[1].toLowerCase() +
+    socketIdSet[2].toLowerCase();
+
+  return id;
 }
 
 server.listen(10000, () => {
