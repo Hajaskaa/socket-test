@@ -26,7 +26,8 @@ io.on("connection", async (socket) => {
   }
 
   const clients = await io.allSockets();
-  const clientId = getClientId(socket);
+  // const clientId = getClientId(socket);
+  const clientId = socket.id[0] + socket.id[1] + socket.id[2];
 
   io.emit(
     "chat message",
@@ -48,17 +49,17 @@ function handleChatHistory(msg) {
   if (history.length > 99) history.shift();
 }
 
-function getClientId(socket) {
-  const socketIdArray = socket.id.match(/[A-Za-z]/g);
-  const socketIdSet = [...new Set(socketIdArray)];
-  console.log(socketIdArray);
-  const id =
-    socketIdSet[0].toUpperCase() +
-    socketIdSet[1].toLowerCase() +
-    socketIdSet[2].toLowerCase();
+// export function getClientId(socket) {
+//   const socketIdArray = socket.id.match(/[A-Za-z]/g);
+//   const socketIdSet = [...new Set(socketIdArray)];
+//   console.log(socketIdArray);
+//   const id =
+//     socketIdSet[0].toUpperCase() +
+//     socketIdSet[1].toLowerCase() +
+//     socketIdSet[2].toLowerCase();
 
-  return id;
-}
+//   return id;
+// }
 
 server.listen(10000, () => {
   console.log("server running at ");
