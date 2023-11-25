@@ -1,21 +1,30 @@
-import express from "express";
-import { createServer } from "node:http";
-import { Server } from "socket.io";
+const socket = io();
 
-const app = express();
-const server = createServer(app);
-const io = new Server(server);
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const messages = document.getElementById("messages");
 
-app.get("/", (req, res) => {
-  res.sendFile(new URL("./index.html", import.meta.url).pathname);
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (input.value) {
+    const id = socket.id[0] + socket.id[1] + socket.id[2];
+    const currentDate = new Date();
+
+    const currentHour = currentDate.getHours();
+    const currentMinute = currentDate.getMinutes();
+    const timestamp = `${currentHour}:${currentMinute} - `;
+
+    socket.emit(
+      "chat message",
+      timestamp + "[" + id + "]" + " 👻" + "sent a msg: " + input.value
+    );
+    input.value = "";
+  }
 });
 
-io.on("connection", (socket) => {
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
-  });
-});
-
-server.listen(3000, () => {
-  console.log("server running at http://localhost:3000");
+socket.on("chat message", (msg) => {
+  const item = document.createElement("li");
+  item.textContent = msg;
+  messages.appendChild(item);
+  window.scrollTo(0, document.body.scrollHeight);
 });
